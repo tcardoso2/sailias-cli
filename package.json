@@ -1,6 +1,6 @@
 {
   "name": "sailias-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Sailias CLI tool for deployment / migration",
   "main": "index.js",
   "directories": {
