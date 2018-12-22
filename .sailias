@@ -1,8 +1,12 @@
 {
   "source": "sailias-0.2.4.tgz",
+  
   "sink": "./output",
+  
   "pre-clone": {
-    "step": "npm install <source>"
+    "step": "npm install <source>",
+    "verify": "<stdout> | grep -q 'installed' && echo 'true'"
   },
+  
   "copy": "cp -Rf node_modules/sailias <sink>"
 }
