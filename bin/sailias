@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+let program = require('commander');
+let log = require('../lib/helpers').log;
+//Available functions
+let clone = require('../lib/sailias-cli/clone');
+let deploy = require('../lib/sailias-cli/deploy');
+let undeploy = require('../lib/sailias-cli/undeploy');
+
+
+welcome();
+defineOptions();
+
+function welcome() {
+  log.info('Welcome to sailias CLI tool');
+}
+
+function defineOptions() {
+  program
+    .option('-c, clone', 'Clone a new installation to the defined source', clone)
+    .parse(process.argv);
+}

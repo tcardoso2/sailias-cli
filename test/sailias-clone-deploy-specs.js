@@ -16,6 +16,10 @@ let fs = require('fs');
 let clone = require('../lib/sailias-cli/clone.js');
 let deploy = require('../lib/sailias-cli/deploy.js');
 let undeploy = require('../lib/sailias-cli/undeploy.js');
+let helpers = require('../lib/helpers');
+let index = require('../index');
+let cli = require('node-cmd');
+const sailiasCmd = './bin/sailias';
 
 //Chai will use promises for async events
 chai.use(chaiAsPromised);
@@ -30,11 +34,60 @@ after(function(done) {
 });
 
 describe("Cloning tests", function() {
-  xit('should have a hidden .sailias files which stores configurations', function () {
+  it('should have a hidden .sailias file which stores configurations', function (done) {
+    fs.open('./.sailias', 'r', (err, file) => {
+      (err == null).should.equal(true);
+      done();
+    });
   });
-  xit('should allow defining and getting the values of a source directory/file to clone from in the sailias config file', function () {
+  it('should allow defining and getting the values of a source directory/file to clone from in the sailias config file', function (done) {
+    helpers.readJson('../.sailias', (err, settings) => {
+      (err == null).should.equal(true);
+      (settings.source === undefined).should.not.equal(true);
+      done();
+    });
   });
-  xit('"sailias clone" command should clone a new sailias site into the destination ', function () {
+  it('should have a function to initialize settings', function (done) {
+    try {
+      index.getSettings();
+    } catch (e) {
+      e.message.should.equal('Settings are not yet initialized, call readSettings() first!');
+      index.readSettingsCallback((err, settings) => {
+        (err == null).should.equal(true);
+        (settings.source === undefined).should.not.equal(true);
+        let _settings = index.getSettings();
+        _settings.should.be.eql(settings);
+        done();
+      });
+    }
+  });
+  it('initializing setting is also possible using promises', function (done) {
+    index.reset();
+    try {
+      index.getSettings();
+    } catch (e) {
+      e.message.should.equal('Settings are not yet initialized, call readSettings() first!');
+      index.readSettings().then((settings) => {
+        (settings.source === undefined).should.not.equal(true);
+        let _settings = index.getSettings();
+        _settings.should.be.eql(settings);
+        done();
+      }, (error) => {
+        //Promise was rejected
+        should.fail();
+      });
+    }
+  });
+  it('"sailias clone" command should clone a new sailias site into the destination ', function (done) {
+    this.timeout(120000);
+    cli.get(`${sailiasCmd} clone`, (err, data, stderr) => {
+      (err == null).should.equal(true);
+      index.clone().then(() => {
+
+      }, (error) => {
+        //Promize was rejected
+      });
+    })
   });
   xit('smoke tests to make sure the cloning went good. ', function () {
   });

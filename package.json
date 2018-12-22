@@ -1,6 +1,6 @@
 {
   "name": "sailias-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sailias CLI tool for deployment / migration",
   "main": "index.js",
   "directories": {
@@ -11,5 +11,13 @@
     "test": "mocha"
   },
   "author": "Tiago Cardoso <tcardoso@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.19.0",
+    "sailias": "file:sailias-0.2.4.tgz",
+    "tracer": "^0.9.6"
+  },
+  "devDependencies": {
+    "node-cmd": "^3.0.0"
+  }
 }
