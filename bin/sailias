@@ -3,7 +3,9 @@
 let program = require('commander');
 let log = require('../lib/helpers').log;
 //Available functions
+let copy = require('../lib/sailias-cli/copy');
 let clone = require('../lib/sailias-cli/clone');
+let remove = require('../lib/sailias-cli/remove');
 let deploy = require('../lib/sailias-cli/deploy');
 let undeploy = require('../lib/sailias-cli/undeploy');
 
@@ -18,5 +20,7 @@ function welcome() {
 function defineOptions() {
   program
     .option('-c, clone', 'Clone a new installation to the defined source', clone)
+    .option('-p, copy', 'Copies only an existing installation to the defined sink', copy)
+    .option('-r, remove', 'Removes the local copy from the sink', remove)
     .parse(process.argv);
 }

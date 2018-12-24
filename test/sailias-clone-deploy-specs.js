@@ -79,17 +79,36 @@ describe("Cloning tests", function() {
     }
   });
   it('"sailias clone" command should clone a new sailias site into the destination ', function (done) {
+    if (!helpers.isOnline()) {
+      done();
+      return;
+    }
     this.timeout(120000);
     cli.get(`${sailiasCmd} clone`, (err, data, stderr) => {
       (err == null).should.equal(true);
-      index.clone().then(() => {
-
-      }, (error) => {
-        //Promize was rejected
-      });
+    })
+  });
+  it('"sailias copy" command should copy from cloned into sink ', function (done) {
+    this.timeout(4000);
+    cli.get(`${sailiasCmd} copy`, (err, data, stderr) => {
+      console.log("Test output is: ", data);
+      (err == null).should.equal(true);
+      data.indexOf("Called copy...").should.be.gt(0);
+      data.indexOf("Verifying if cmd").should.be.gt(0);
+      done();
     })
   });
   xit('smoke tests to make sure the cloning went good. ', function () {
+  });
+  it('"sailias remove" command should remove the local sink copy ', function (done) {
+    this.timeout(4000);
+    cli.get(`${sailiasCmd} remove`, (err, data, stderr) => {
+      console.log("Test output is: ", data);
+      (err == null).should.equal(true);
+      data.indexOf("Called remove...").should.be.gt(0);
+      data.indexOf("Verifying if cmd").should.be.gt(0);
+      done();
+    })
   });
 });
 

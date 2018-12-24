@@ -8,5 +8,13 @@
     "verify": "<stdout> | grep -q 'installed' && echo 'true'"
   },
   
-  "copy": "cp -Rf node_modules/sailias <sink>"
+  "copy": {
+    "step": "cp -Rf node_modules/sailias/* <sink>",
+    "verify": "ls <sink> | grep -q 'app.js' && echo 'true'"
+  },
+
+  "remove": {
+    "step": "rm -rf <sink>/*",
+    "verify": ""
+  }
 }
