@@ -98,7 +98,34 @@ describe("Cloning tests", function() {
       done();
     })
   });
-  xit('smoke tests to make sure the cloning went good. ', function () {
+  it('smoke tests to make sure the cloning went good (besides the verification steps). ', function (done) {
+    //test synchronously for api, assets, config, scripts, tasks, views folders
+    let output = index.getSettings().sink;
+    if (fs.existsSync(`${output}/api`)) {
+      if (fs.existsSync(`${output}/assets`)) {
+        if (fs.existsSync(`${output}/config`)) {
+          if (fs.existsSync(`${output}/scripts`)) {
+            if (fs.existsSync(`${output}/tasks`)) {
+              if (fs.existsSync(`${output}/views`)) {
+                //Checking for app.js, Gruntfie.js, package.json and README.md files
+                if (fs.existsSync(`${output}/app.js`)) {
+                  if (fs.existsSync(`${output}/Gruntfile.js`)) {
+                    if (fs.existsSync(`${output}/package.json`)) {
+                      if (fs.existsSync(`${output}/README.md`)) {
+
+                        done();
+                        return;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    should.fail();
   });
   it('"sailias remove" command should remove the local sink copy ', function (done) {
     this.timeout(4000);
