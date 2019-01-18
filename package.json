@@ -1,8 +1,8 @@
 {
   "name": "sailias-cli",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Sailias CLI tool for deployment / migration",
-  "main": "index.js",
+  "main": "./bin/sailias",
   "directories": {
     "lib": "lib",
     "test": "test"

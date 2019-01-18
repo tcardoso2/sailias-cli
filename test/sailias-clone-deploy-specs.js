@@ -1,6 +1,6 @@
 "use strict"
 /*****************************************************
- * Sales Deploy specs:
+ * Sailias Deploy specs:
  *   Tests initial deployment steps which either:
  *   1) clone a new sailias backend into a destination
  *      folder and adds the current customizations on
@@ -16,6 +16,7 @@ let fs = require('fs');
 let clone = require('../lib/sailias-cli/clone.js');
 let deploy = require('../lib/sailias-cli/deploy.js');
 let undeploy = require('../lib/sailias-cli/undeploy.js');
+let install = require('../lib/sailias-cli/install.js');
 let helpers = require('../lib/helpers');
 let index = require('../index');
 let cli = require('node-cmd');
@@ -95,6 +96,17 @@ describe("Cloning tests", function() {
       (err == null).should.equal(true);
       data.indexOf("Called copy...").should.be.gt(0);
       data.indexOf("Verifying if cmd").should.be.gt(0);
+      done();
+    })
+  });
+  xit('"sailias install" command should perform any npm install on the output ', function (done) {
+    this.timeout(4000);
+    cli.get(`${sailiasCmd} install`, (err, data, stderr) => {
+      console.log("Test output is: ", data);
+      (err == null).should.equal(true);
+      data.indexOf("Called copy...").should.be.gt(0);
+      data.indexOf("Verifying if cmd").should.be.gt(0);
+      should.fail("Not implemented");
       done();
     })
   });

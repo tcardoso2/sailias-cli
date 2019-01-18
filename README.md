@@ -1,4 +1,6 @@
-** SAILIAS CLI
+** SAILIAS CLI  
+
+- v 0.1.5: Added more tests for next commands, install, add-page, remove-page, add admin user (WIP);  
 - v 0.1.4: Smoke tests to check package is correctly copied;  
 - v 0.1.3: Bug fixes, will only perform certain tests (e.g. npm install if online), added sailias copy and sailias remove, verification still in progress...  
 - v 0.1.2: WIP on clone command;  
