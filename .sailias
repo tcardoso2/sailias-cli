@@ -1,5 +1,5 @@
 {
-  "source": "sailias-0.2.4.tgz",
+  "source": "sources/sailias-0.2.4.tgz",
   
   "sink": "./output",
   
@@ -16,5 +16,10 @@
   "remove": {
     "step": "rm -rf <sink>/*",
     "verify": ""
+  },
+
+  "deploy": {
+    "step": "cd <sink>; npm pack",
+    "verify": "ls <sink> | grep -q 'sailias' | grep -q 'tgz' && echo 'true'"
   }
 }

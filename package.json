@@ -1,14 +1,15 @@
 {
   "name": "sailias-cli",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Sailias CLI tool for deployment / migration",
   "main": "./bin/sailias",
+  "bin": "./bin/sailias",
   "directories": {
     "lib": "lib",
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test/ --exit"
   },
   "author": "Tiago Cardoso <tcardoso@gmail.com>",
   "license": "MIT",

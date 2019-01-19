@@ -3,23 +3,28 @@
 let cmd = require('commander');
 let cli = require('node-cmd');
 let helpers = require('./lib/helpers');
+let path = require('path');
 let log = helpers.log;
 
-let _settings;
+var _settings;
 
 function reset(){
   log.info("Called reset...");
   _settings = undefined;
 }
 
-//Might be deprecated later
+/*********************
+ * Might be deprecated later (use the 
+ * promises method instead, readSettings)
+ * Reads the .sailias settings file 
+ * into an internal _settings property
+ ********************/
 function readSettingsCallback(cb) {
   log.info("Called readSettingsCallback...");
   if(!_settings) {
-    helpers.readJson('../.sailias', (err, settings) => {
+    helpers.readJson(path.resolve('.sailias'), (err, settings) => {
     	if(!err){
   	    _settings = settings;
-  	    log.debug(settings);
   	    cb(null, settings);
   	  } else {
   	    cb(err);
@@ -30,14 +35,19 @@ function readSettingsCallback(cb) {
   }
 }
 
-//Uses Promises
+/*********************
+ * Might be deprecated later.
+ * Reads the .sailias settings file 
+ * into an internal _settings property
+ ********************/
 function readSettings() {
   log.info("Called readSettings (promise)...");
   return new Promise((resolve, reject) => {
-    readSettingsCallback((err, settings) => {
+    readSettingsCallback((err) => {
   	  if(!err) {
-  	  	log.debug('Resolving promise');
-  	    resolve(settings);
+        log.debug('Resolving promise, settings are:');
+        log.debug(_settings);
+  	    resolve(_settings);
   	  } else {
   	  	log.debug(`Rejecting promise: ${err}`);
   	    reject(err);
@@ -46,14 +56,18 @@ function readSettings() {
   });
 }
 
+//COMMANDS
+//One needs to add function here per command, if it does what is mentioned in sailias only,
+//then it is enough to call the executeStep(settings, "your-command-name")
+//If custom steps are needed, add those into the lig/sailias-cli/folder and call then from here
+//For the command to be invoked via command line, add it into the bin/sailias file
+
 //Uses Promises - clone needs to be redesigned I'm repeating the read settings, see the implementation of copy
-function clone() {
+function clone(settings) {
   log.info("Called clone (promise)...");
   return new Promise((resolve, reject) => {
-    readSettings().then((settings) => {
-      preClone(settings).then(() => {
-        copy(settings).then(() => {
-        });
+    preClone(settings).then(() => {
+      copy(settings).then(() => {
       });
   	}, (error) => {
   	  reject(error);
@@ -69,6 +83,11 @@ function copy(settings) {
 function remove(settings) {
   log.info("Called remove...");
   return executeStep(settings, "remove");
+}
+
+function deploy(settings) {
+  log.info("Called deploy...");
+  return executeStep(settings, "deploy");
 }
 
 function preClone(settings) {
@@ -98,7 +117,7 @@ function executeStep(settings, step) {
 }
 
 function executeCmd(cmd, resolve, reject, verifyCmd = '') {
-  log.info("Called executeCmd (promise)...");
+  log.info(`Called executeCmd (promise) on "${cmd} and verifying straight away with "${verifyCmd}"...`);
   cli.get(`${cmd}
   	${verifyCmd}`, (err, data, stderr) => {
     if (err) {
@@ -118,10 +137,10 @@ function executeCmd(cmd, resolve, reject, verifyCmd = '') {
 
 function getSettings() {
   log.info("Called getSettings...");
+  log.debug(_settings);
   if(!_settings) {
   	throw new Error('Settings are not yet initialized, call readSettings() first!');
   }
-  log.debug(_settings);
   return _settings;
 }
 
@@ -130,6 +149,7 @@ exports.readSettings = readSettings;
 exports.getSettings = getSettings;
 exports.clone = clone;
 exports.copy = copy;
+exports.deploy = deploy;
 exports.remove = remove;
 exports.reset = reset;
 

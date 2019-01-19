@@ -57,6 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
-# output folder
+# output and target folders
 output/
+target/
 
