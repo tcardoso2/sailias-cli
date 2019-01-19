@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 let program = require('commander');
-let log = require('../lib/helpers').log;
+let log = require('../lib/helpers.js').log;
 //Available functions
-let copy = require('../lib/sailias-cli/copy');
-let clone = require('../lib/sailias-cli/clone');
-let remove = require('../lib/sailias-cli/remove');
-let deploy = require('../lib/sailias-cli/deploy');
-let undeploy = require('../lib/sailias-cli/undeploy');
+let copy = require('../lib/sailias-cli/copy.js');
+let clone = require('../lib/sailias-cli/clone.js');
+let remove = require('../lib/sailias-cli/remove.js');
+let deploy = require('../lib/sailias-cli/deploy.js');
+let undeploy = require('../lib/sailias-cli/undeploy.js');
 
 
 welcome();
@@ -15,6 +15,9 @@ defineOptions();
 
 function welcome() {
   log.info('Welcome to sailias CLI tool');
+  console.log('╔═╗╔═╗╦╦  ╦╔═╗╔═╗   ╔═╗╦  ╦');
+  console.log('╚═╗╠═╣║║  ║╠═╣╚═╗   ║  ║  ║');
+  console.log('╚═╝╩ ╩╩╩═╝╩╩ ╩╚═╝   ╚═╝╩═╝╩'); 
 }
 
 function defineOptions() {
@@ -22,5 +25,7 @@ function defineOptions() {
     .option('-c, clone', 'Clone a new installation to the defined source', clone)
     .option('-p, copy', 'Copies only an existing installation to the defined sink', copy)
     .option('-r, remove', 'Removes the local copy from the sink', remove)
+    .option('-d, deploy', 'Deploys a sailias site (as a npm package with source available) into the sink folder', deploy)
+
     .parse(process.argv);
 }

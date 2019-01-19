@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+TARGET="./target"
+rm -rf $TARGET
+pkg ./package.json --out-path $TARGET

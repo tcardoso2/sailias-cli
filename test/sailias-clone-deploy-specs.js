@@ -48,7 +48,7 @@ describe("Cloning tests", function() {
       done();
     });
   });
-  it('should have a function to initialize settings', function (done) {
+  it('should have a function to initialize settings from the .sailias file', function (done) {
     try {
       index.getSettings();
     } catch (e) {
@@ -62,7 +62,7 @@ describe("Cloning tests", function() {
       });
     }
   });
-  it('initializing setting is also possible using promises', function (done) {
+  it('initializing setting is also possible using promises (preferred method)', function (done) {
     index.reset();
     try {
       index.getSettings();
@@ -79,7 +79,7 @@ describe("Cloning tests", function() {
       });
     }
   });
-  it('"sailias clone" command should clone a new sailias site into the destination ', function (done) {
+  it('"sailias clone" command should clone a new sailias site into the destination (requires being online) ', function (done) {
     if (!helpers.isOnline()) {
       done();
       return;
@@ -139,20 +139,22 @@ describe("Cloning tests", function() {
     }
     should.fail();
   });
-  it('"sailias remove" command should remove the local sink copy ', function (done) {
-    this.timeout(4000);
-    cli.get(`${sailiasCmd} remove`, (err, data, stderr) => {
-      console.log("Test output is: ", data);
-      (err == null).should.equal(true);
-      data.indexOf("Called remove...").should.be.gt(0);
-      data.indexOf("Verifying if cmd").should.be.gt(0);
-      done();
-    })
-  });
 });
 
-describe("Customization - deploy tests", function() {
-  xit('"sailias deploy" should package the current directory\'s contents via standard npm pack', function () {    
+describe("Customizations - deploy tests", function() {
+  it('"sailias deploy" should package the a directory\'s contents via standard npm pack (keeps source)', function (done) {    
+    this.timeout(10000);
+    let output = "output" //TODO: Allow the command deploy to take an output
+    cli.get(`${sailiasCmd} deploy`, (err, data, stderr) => {
+      console.log("Test output is: ", data);
+      let version = require('../output/package.json').version;
+      (err == null).should.equal(true);
+      data.indexOf("Called deploy...").should.be.gt(0);
+      //data.indexOf("Verifying if cmd").should.be.gt(0);
+      console.log(`Verifying if ${output}/sailias-${version}.tgz exists...`);
+      fs.existsSync(`${output}/sailias-${version}.tgz`).should.equal(true);
+      done();
+    })
   });
   xit('should unpack the contents of the custom package into the sailias folder (via npm install and then moves files into actual folder)', function () {    
   });
@@ -166,5 +168,18 @@ describe("undeploy tests", function() {
   xit('"sailias undeploy" should remove the sailias customizations', function () {    
   });
   xit('smoke tests, should validate if all the contents removed are really removed (e.g. sailias should be reverted to original state)', function () {    
+  });
+});
+
+describe("remove tests", function() {
+  xit('"sailias remove" command should remove the local sink copy ', function (done) {
+    this.timeout(4000);
+    cli.get(`${sailiasCmd} remove`, (err, data, stderr) => {
+      console.log("Test output is: ", data);
+      (err == null).should.equal(true);
+      data.indexOf("Called remove...").should.be.gt(0);
+      data.indexOf("Verifying if cmd").should.be.gt(0);
+      done();
+    })
   });
 });
