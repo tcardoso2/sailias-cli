@@ -16,7 +16,8 @@
   "dependencies": {
     "commander": "^2.19.0",
     "sailias": "file:sailias-0.2.4.tgz",
-    "tracer": "^0.9.6"
+    "tracer": "^0.9.6",
+    "cryptiles": ">=4.1.2"
   },
   "devDependencies": {
     "node-cmd": "^3.0.0"
