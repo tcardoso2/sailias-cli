@@ -1,6 +1,6 @@
 {
   "name": "sailias-cli",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Sailias CLI tool for deployment / migration",
   "main": "./bin/sailias",
   "bin": "./bin/sailias",
@@ -21,6 +21,7 @@
     "https-proxy-agent": ">=2.2.0"
   },
   "devDependencies": {
+    "chai-http": "^4.2.1",
     "node-cmd": "^3.0.0"
   }
 }

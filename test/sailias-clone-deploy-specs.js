@@ -10,6 +10,7 @@
  *****************************************************/
 
 let chai = require('chai');
+let chaiHttp = require('chai-http');
 let chaiAsPromised = require("chai-as-promised");
 let should = chai.should();
 let fs = require('fs');
@@ -24,6 +25,7 @@ const sailiasCmd = './bin/sailias';
 
 //Chai will use promises for async events
 chai.use(chaiAsPromised);
+chai.use(chaiHttp)
 
 before(function(done) {
   done();
@@ -99,16 +101,30 @@ describe("Cloning tests", function() {
       done();
     })
   });
-  xit('"sailias install" command should perform any npm install on the output ', function (done) {
-    this.timeout(4000);
+  [ "@longtest" ]
+  it('"sailias install" command should perform any npm install on the sink ', function (done) {
+    this.timeout(50000);
     cli.get(`${sailiasCmd} install`, (err, data, stderr) => {
       console.log("Test output is: ", data);
       (err == null).should.equal(true);
-      data.indexOf("Called copy...").should.be.gt(0);
       data.indexOf("Verifying if cmd").should.be.gt(0);
-      should.fail("Not implemented");
       done();
     })
+  });
+  it('site should be up and running ', function (done) {
+    this.timeout(20000);
+    console.log("Going to output folder and attempting to start app...");
+    cli.run(`cd ./output && ls && node app`);
+    setTimeout(() => {
+      console.log("Sending HTTP request to site...");
+      chai.request('localhost:1337')
+        .get('/')
+        .end((err, res) => {
+          //Assert
+          res.should.have.status(200);
+          done();
+      });
+    }, 10000);
   });
   it('smoke tests to make sure the cloning went good (besides the verification steps). ', function (done) {
     //test synchronously for api, assets, config, scripts, tasks, views folders
@@ -141,10 +157,16 @@ describe("Cloning tests", function() {
   });
 });
 
+describe("List tests", function() {
+  xit('"sailias list" should list current sailias sites and process associated', function (done) {    
+  });
+});
+
 describe("Customizations - deploy tests", function() {
   it('"sailias deploy" should package the a directory\'s contents via standard npm pack (keeps source)', function (done) {    
-    this.timeout(10000);
-    let output = "output" //TODO: Allow the command deploy to take an output
+    let settings = index.getSettings();
+    this.timeout(20000);
+    let output = settings.sink //TODO: Allow the command deploy to take an output
     cli.get(`${sailiasCmd} deploy`, (err, data, stderr) => {
       console.log("Test output is: ", data);
       let version = require('../output/package.json').version;
@@ -171,13 +193,27 @@ describe("undeploy tests", function() {
   });
 });
 
-describe("remove tests", function() {
-  xit('"sailias remove" command should remove the local sink copy ', function (done) {
+describe("kill tests", function() {
+  xit('"sailias kill <pid>" command should kill an existing process ', function (done) {
     this.timeout(4000);
     cli.get(`${sailiasCmd} remove`, (err, data, stderr) => {
       console.log("Test output is: ", data);
       (err == null).should.equal(true);
       data.indexOf("Called remove...").should.be.gt(0);
+      data.indexOf("Verifying if cmd").should.be.gt(0);
+      done();
+    })
+  });
+  xit('"sailias kill <pid>" again should return a message error saying process does not exist ', function (done) {
+  });
+});
+
+describe("remove tests", function() {
+  it('"sailias remove" command should remove the local sink copy ', function (done) {
+    this.timeout(4000);
+    cli.get(`${sailiasCmd} remove`, (err, data, stderr) => {
+      console.log("Test output is: ", data);
+      (err == null).should.equal(true);
       data.indexOf("Verifying if cmd").should.be.gt(0);
       done();
     })

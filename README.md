@@ -1,5 +1,6 @@
 ** SAILIAS CLI  
 
+- v 0.1.7: Bug fix showing inexisting error in log; Added start and list command test hubs, added .sailias entry for start where pID will be saved;    
 - v 0.1.6: Using pkg as a tool to distribute an executable, no sources, included in the project (WIP), added build script; started adding auto-generated documentation via documentation.js; added tests for integration with sails; added data/standard/ to include packages which can be added to a sailias installation;  
 - v 0.1.5: Added more tests for next commands, install, add-page, remove-page, add admin user (WIP);  
 - v 0.1.4: Smoke tests to check package is correctly copied;  

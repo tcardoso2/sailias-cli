@@ -80,6 +80,11 @@ function copy(settings) {
   return executeStep(settings, "copy");
 }
 
+function install(settings) {
+  log.info("Called install, wait for at least 1 minute this action usually takes some time...");
+  return executeStep(settings, "install");
+}
+
 function remove(settings) {
   log.info("Called remove...");
   return executeStep(settings, "remove");
@@ -109,7 +114,7 @@ function executeStep(settings, step) {
       log.info(`Executing '${step}' command: '${cmd}'...`);
       executeCmd(cmd, resolve, reject, verify);
   	} else {
-  	  let err = `Error, step "${step}" was not found. Aborting.`;
+  	  let err = `Error, step "${step}" was not found in .sailias file, did you forget to add? Aborting current action.`;
   	  log.error(err);
   	  reject("Incorrect Configuration");
   	}
@@ -124,9 +129,9 @@ function executeCmd(cmd, resolve, reject, verifyCmd = '') {
       log.error(err);
       reject(stderr);
     } else {
-      log.info(`Verifying if cmd was successfull with >"${verifyCmd}"...`)
+      log.info(`Verifying if cmd was successfull with > "${verifyCmd}"...`)
       //Assumes everything is well
-      if (data == 'true') {
+      if (data.trim() === 'true') {
         resolve(data);
       } else {
         reject(data);
@@ -152,4 +157,5 @@ exports.copy = copy;
 exports.deploy = deploy;
 exports.remove = remove;
 exports.reset = reset;
+exports.install = install;
 

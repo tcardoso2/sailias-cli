@@ -13,13 +13,24 @@
     "verify": "ls <sink> | grep -q 'app.js' && echo 'true'"
   },
 
+  "install": {
+    "step": "cd <sink> && npm install && cd ..",
+    "verify": "ls <sink> | grep -q 'node_modules' && echo 'true'"
+  },
+
   "remove": {
     "step": "rm -rf <sink>/*",
-    "verify": ""
+    "verify": "echo 'true'"
   },
 
   "deploy": {
     "step": "cd <sink>; npm pack",
     "verify": "ls <sink> | grep -q 'sailias' | grep -q 'tgz' && echo 'true'"
+  },
+
+  "start": {
+    "step": "cd <sink> && echo <fn(randomUUID)> && node app",
+    "verify": "ls <sink> | grep -q 'node_modules' && echo 'true'",
+    "save": "randomUUID"
   }
 }
