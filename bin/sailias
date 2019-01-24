@@ -2,14 +2,14 @@
 
 let program = require('commander');
 let log = require('../lib/helpers.js').log;
-//Available functions
-let copy = require('../lib/sailias-cli/copy.js');
-let install = require('../lib/sailias-cli/install.js');
+//Custom functions
+let start = require('../lib/sailias-cli/start.js');
 let clone = require('../lib/sailias-cli/clone.js');
-let remove = require('../lib/sailias-cli/remove.js');
 let deploy = require('../lib/sailias-cli/deploy.js');
 let undeploy = require('../lib/sailias-cli/undeploy.js');
 let package = require('../package.json');
+let sailias = require('../index');
+
 
 welcome();
 defineOptions();
@@ -25,15 +25,19 @@ function defineOptions() {
   program
     .version(package.version)
     .option('-c, clone', 'Clone a new installation to the defined source', clone)
-    .option('-p, copy', 'Copies only an existing installation to the defined sink', copy)
-    .option('-r, remove', 'Removes the local copy from the sink', remove)
+    .option('-p, copy', 'Copies only an existing installation to the defined sink')
+    .option('-r, remove', 'Removes the local copy from the sink')
     .option('-d, deploy', 'Deploys a sailias site (as a npm package with source available) into the sink folder', deploy)
-    .option('-i, install', 'Installs a sailias copied site sink dependencies (via npm install)', install)
+    .option('-i, install', 'Installs a sailias copied site sink dependencies (via npm install)')
+    .option('-s, start', 'Starts the app in the sink')
     .on('command:*', function () {
+      console.log(`Calling with args: ${program.args}`)
       let isCommand = false;
       for (let op in program.options) {
         isCommand |= program[program.options[op].long];
-        if (isCommand) return;
+        if (isCommand) {
+          return sailias.run(program.options[op].long, program.args);
+        }
       }
       //console.log(program.args)
       console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));

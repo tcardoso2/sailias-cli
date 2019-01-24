@@ -17,7 +17,6 @@ let fs = require('fs');
 let clone = require('../lib/sailias-cli/clone.js');
 let deploy = require('../lib/sailias-cli/deploy.js');
 let undeploy = require('../lib/sailias-cli/undeploy.js');
-let install = require('../lib/sailias-cli/install.js');
 let helpers = require('../lib/helpers');
 let index = require('../index');
 let cli = require('node-cmd');
@@ -105,6 +104,15 @@ describe("Cloning tests", function() {
   it('"sailias install" command should perform any npm install on the sink ', function (done) {
     this.timeout(50000);
     cli.get(`${sailiasCmd} install`, (err, data, stderr) => {
+      console.log("Test output is: ", data);
+      (err == null).should.equal(true);
+      data.indexOf("Verifying if cmd").should.be.gt(0);
+      done();
+    })
+  });
+  it('"sailias start" command should start the sink app ', function (done) {
+    this.timeout(50000);
+    cli.get(`${sailiasCmd} start`, (err, data, stderr) => {
       console.log("Test output is: ", data);
       (err == null).should.equal(true);
       data.indexOf("Verifying if cmd").should.be.gt(0);

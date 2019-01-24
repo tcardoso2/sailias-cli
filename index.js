@@ -85,6 +85,11 @@ function install(settings) {
   return executeStep(settings, "install");
 }
 
+function start(settings, async = true) {
+  log.info("Called start...");
+  return executeStep(settings, "start", async);
+}
+
 function remove(settings) {
   log.info("Called remove...");
   return executeStep(settings, "remove");
@@ -101,18 +106,24 @@ function preClone(settings) {
 }
 
 //Uses Promises
-function executeStep(settings, step) {
-  log.info(`Called executeStep (promise) for step "${step}"...`);
+function executeStep(settings, step, async = false) {
+  log.info(`Called executeStep (promise) for step "${step}" with async = ${async}...`);
   return new Promise((resolve, reject) => {
   	if (settings[step]) {
-      let cmd = settings[step]["step"]
-        .replace("<source>", settings.source)
-        .replace("<sink>", settings.sink);
-      let verify = settings[step].verify
-        .replace("<source>", settings.source)
-        .replace("<sink>", settings.sink);
-      log.info(`Executing '${step}' command: '${cmd}'...`);
-      executeCmd(cmd, resolve, reject, verify);
+      try{
+        let cmd = format(settings[step]["step"]);
+        let verify = format(settings[step].verify);
+        let save = format(settings[step].save);
+        if(async) {
+          log.info(`Executing '${step}' command: '${cmd}', save? '${save}' (Async)...`);
+          executeCmdAsync(cmd, resolve, reject, verify, save);        
+        } else {
+          log.info(`Executing '${step}' command: '${cmd}', save? '${save}'...`);
+          executeCmd(cmd, resolve, reject, verify, save);        
+        }
+      } catch(e) {
+        log.error(e)
+      }
   	} else {
   	  let err = `Error, step "${step}" was not found in .sailias file, did you forget to add? Aborting current action.`;
   	  log.error(err);
@@ -121,8 +132,18 @@ function executeStep(settings, step) {
   });  
 }
 
-function executeCmd(cmd, resolve, reject, verifyCmd = '') {
-  log.info(`Called executeCmd (promise) on "${cmd} and verifying straight away with "${verifyCmd}"...`);
+//Resolves right away
+function executeCmdAsync(cmd, resolve, reject, verifyCmd = '', save) {
+  log.info(`Called executeCmdAsync (promise) on "${cmd} and verifying straight away with "${verifyCmd}" and save "${save}...`);
+  cli.run(`${cmd}`);
+  cli.run(`${verifyCmd}`);
+  log.info(`Resolving, save = ${save}`);
+  resolve(null, save);
+}
+
+function executeCmd(cmd, resolve, reject, verifyCmd = '', save) {
+  log.info(`Called executeCmd (promise) on "${cmd} and verifying straight away with "${verifyCmd}" and save "${save}...`);
+  //Should it be a get or a run? For long lived commands...
   cli.get(`${cmd}
   	${verifyCmd}`, (err, data, stderr) => {
     if (err) {
@@ -132,7 +153,7 @@ function executeCmd(cmd, resolve, reject, verifyCmd = '') {
       log.info(`Verifying if cmd was successfull with > "${verifyCmd}"...`)
       //Assumes everything is well
       if (data.trim() === 'true') {
-        resolve(data);
+        resolve(data, save);
       } else {
         reject(data);
       }
@@ -149,13 +170,63 @@ function getSettings() {
   return _settings;
 }
 
+/*Shortcut function => Find a way to pass async! Test also!*/ 
+function run(fn, args) {
+  log.info(`Calling '${fn}' with args: '${args}'...`);
+  let async = args == 'async';
+  readSettings().then((settings) => {
+    executeStep(settings, fn, async).then((data, save) => {
+      try{
+        let postLib = require(`./lib/sailias-cli/${fn}`)(data, save);
+      } catch(e){
+        //Make this a more friendly error
+        if(e.message.indexOf("Cannot find module") >= 0) {
+          log.info("No custom module found, ignoring and keeping it simple...")
+        } else {
+          log.warning(e);
+        }
+      }
+    }, (error) => {
+      //Promize was rejected
+    });
+  }, (err) => {
+    log.error("Error reading Settings...")
+    log.error(err);
+  });
+}
+
+//Private
+function format(step) {
+  //TODO: Make this dinamyc replace based on .sailias
+  if (!step) return;
+  return step
+    .replace(/<source>/g, _settings.source)
+    .replace(/<sink>/g, _settings.sink)
+    .replace(/<randomUID>/g, _settings.randomUID.type && _settings.randomUID.type == "function" ? functions["randomUID"]() : _settings.randomUID)
+    .replace(/<lastUID>/g, _settings.lastUID.type && _settings.lastUID.type == "function" ? functions["lastUID"]() : _settings.lastUID);
+}
+
+//Functions 
+let lastUID;
+let functions = {
+  randomUID : () => {
+    lastUID = parseInt(Math.random() * 99999999999)
+    return lastUID;
+  },
+  lastUID : () => {
+    return lastUID;
+  }
+}
+
 exports.readSettingsCallback = readSettingsCallback;
 exports.readSettings = readSettings;
 exports.getSettings = getSettings;
 exports.clone = clone;
 exports.copy = copy;
+exports.start = start;
 exports.deploy = deploy;
 exports.remove = remove;
 exports.reset = reset;
 exports.install = install;
+exports.run = run;
 

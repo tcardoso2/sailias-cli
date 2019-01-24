@@ -2,6 +2,10 @@
   "source": "sources/sailias-0.2.4.tgz",
   
   "sink": "./output",
+
+  "randomUID": { "type": "function" },
+
+  "lastUID": { "type": "function" },
   
   "pre-clone": {
     "step": "npm install <source>",
@@ -29,8 +33,8 @@
   },
 
   "start": {
-    "step": "cd <sink> && echo <fn(randomUUID)> && node app",
+    "step": "cd <sink> && echo <randomUID> && node app > sailias.log",
     "verify": "ls <sink> | grep -q 'node_modules' && echo 'true'",
-    "save": "randomUUID"
+    "save": "<lastUID>"
   }
 }
