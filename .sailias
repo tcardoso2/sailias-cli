@@ -8,7 +8,7 @@
   "lastUID": { "type": "function" },
   
   "pre-clone": {
-    "step": "npm install <source>",
+    "step": "npm install <source>  > <sink>/sailias.log",
     "verify": "<stdout> | grep -q 'installed' && echo 'true'"
   },
   

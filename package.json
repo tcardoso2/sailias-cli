@@ -1,6 +1,6 @@
 {
   "name": "sailias-cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Sailias CLI tool for deployment / migration",
   "main": "./bin/sailias",
   "bin": "./bin/sailias",

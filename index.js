@@ -163,8 +163,9 @@ function executeCmd(cmd, resolve, reject, verifyCmd = '', save) {
 
 function getSettings() {
   log.info("Called getSettings...");
-  log.debug(_settings);
+  log.debug(`_settings is ${_settings}`);
   if(!_settings) {
+    log.warning("OOOOooooops looks like _settings is not yet initialized, did you forget to call readSettings?");
   	throw new Error('Settings are not yet initialized, call readSettings() first!');
   }
   return _settings;
@@ -181,7 +182,7 @@ function run(fn, args) {
       } catch(e){
         //Make this a more friendly error
         if(e.message.indexOf("Cannot find module") >= 0) {
-          log.info("No custom module found, ignoring and keeping it simple...")
+          log.info("No custom command found, ignoring and keeping it simple...")
         } else {
           log.warning(e);
         }
