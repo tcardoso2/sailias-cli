@@ -36,6 +36,7 @@ function defineOptions() {
       for (let op in program.options) {
         isCommand |= program[program.options[op].long];
         if (isCommand) {
+          //If the command is run with the "async" option will run in background, otherwise in foreground
           return sailias.run(program.options[op].long, program.args);
         }
       }

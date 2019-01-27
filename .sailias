@@ -23,7 +23,7 @@
   },
 
   "remove": {
-    "step": "rm -rf <sink>/*",
+    "step": "rm -Rf <sink>/*",
     "verify": "echo 'true'"
   },
 

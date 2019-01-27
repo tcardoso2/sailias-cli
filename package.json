@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "chai-http": "^4.2.1",
+    "count-files": "^2.6.2",
     "node-cmd": "^3.0.0"
   }
 }
